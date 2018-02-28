@@ -1,0 +1,57 @@
+version: "3.2"
+services:
+    #web: 
+    #  container_name: httpd
+    #  image: 1and1internet/ubuntu-16-nginx-php-7.0
+    #  ports:
+    #   - "8081:80"
+    #  volumes:
+    #    - d:/libs/mount/src:/var/www
+    #exodata:  
+    #  restart: on-failure:5
+    #  image: exo_data:latest
+    #mysqldata:  
+    #  restart: on-failure:5
+    #  image: mysql_data:latest
+    mysql:  
+      container_name: mysql
+      ports:
+       - "3306:3306"
+      image: mariadb
+      environment:
+        #MYSQL_ROOT_HOST: 172.17.0.1
+        MYSQL_DATABASE: exo
+        MYSQL_USER: exo
+        MYSQL_PASSWORD: exo
+        MYSQL_ROOT_PASSWORD: exo
+      #volumes:
+      #- d:/libs/mount/conf.d:/etc/mysql/conf.d,
+      #- d:/libs/mount/mysql:/var/lib/mysql/
+      # - sshvolume
+      # - data
+        #  - type: bind
+        #    source: d:/libs/mount/mysql
+        #    target: /var/lib/mysql
+    exo_bin:
+        container_name: exo_bin
+        #build: exo_bin
+        image: exo_bin
+        ports:
+         - "8080:8080"
+        #environment:
+        #EXO_DB_TYPE: mysql
+        depends_on:
+        #  - web
+          - mysql
+        #command: ["./wait-for-it.sh", "db:5432", "--", "python", "app.py"]
+        volumes:
+        - d:/libs/mount/data/:/srv/exo
+      
+    
+    #endpoint_mode: dnsrr
+#volumes:
+#  - d:/libs/mount/mysql:/var/lib/mysql
+#volumes:
+ # sshvolume:
+ # data:
+  
