@@ -15,7 +15,8 @@
 #FROM    ubuntu:14.04
 #FROM    exoplatform/ubuntu-jdk7:7u71
 FROM exoplatform/base-jdk:jdk8
-LABEL   maintainer="eXo Platform dd@e.com>"
+
+LABEL   maintainer="Roman Vyhovskyi vihovskyr@gmail.com>"
 
 # Environment variables
 ENV EXO_VERSION 5.0.0-RC10
@@ -29,10 +30,11 @@ ENV EXO_DOWNLOADS /srv/downloads
 ENV EXO_LIB /opt/exo/lib/
 ENV EXO_USER exo
 ENV EXO_GROUP ${EXO_USER}
+ENV EXO_SRC platform-community-5.1.x-SNAPSHOT
 
 # allow to override the list of addons to package by default
 #ARG ADDONS="exo-jdbc-driver-mysql:1.1.0"
-ARG ADDONS="exo-tasks--no-compat"
+#ARG ADDONS="exo-tasks--no-compat"
 
 # Customise system
 RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
@@ -64,25 +66,35 @@ RUN mkdir -p ${EXO_DATA_DIR}   && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR}
     && mkdir -p ${EXO_TMP_DIR} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR} \
     && mkdir -p ${EXO_LOG_DIR} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR} \
     && mkdir -p ${EXO_DOWNLOADS} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DOWNLOADS} \
-    && mkdir -p ${EXO_LIB} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LIB} 
+    && mkdir -p ${EXO_LIB} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LIB} \ 
+	&& mkdir -p ${EXO_APP_DIR}/bin && chown ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}/bin
 
+#HTTP old mirros
 # http://10.23.9.44/dashboard/phpinfo.php
-# Install eXo Platform
+# Install eXo Platform SRC
+
+#Copy sources
 COPY src/src.zip srv/downloads
-RUN mv srv/downloads/src.zip srv/downloads/eXo-Platform-community-${EXO_VERSION}.zip
+RUN mv srv/downloads/src.zip srv/downloads/${EXO_SRC}.zip
+
 #RUN cd srv/downloads / && ls
-RUN unzip -q /srv/downloads/eXo-Platform-community-${EXO_VERSION}.zip -d /srv/downloads/ \
-    && rm -f /srv/downloads/eXo-Platform-community-${EXO_VERSION}.zip \
-    && mv -v /srv/downloads/platform-community-${EXO_VERSION}/* ${EXO_APP_DIR} \
+
+RUN unzip -q /srv/downloads/${EXO_SRC}.zip -d /srv/downloads/ \
+    && rm -f /srv/downloads/${EXO_SRC}.zip \
+    && chown ${EXO_USER}:${EXO_GROUP} srv/downloads/${EXO_SRC} \ 
+    && chmod -R 777 srv/downloads/${EXO_SRC} \ 
+	&& mv -v /srv/downloads/${EXO_SRC}/* ${EXO_APP_DIR} \
     && chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} \
     && ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo \
     && rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
 
-#Add mysql JDBC driver
+#Add mysql mysql JDBC/JNDI driver
 RUN curl -L -o /srv/downloads/mysql-jdbc-${MYSQL_DRIVER_VERSION}.zip https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQL_DRIVER_VERSION}.zip && \
 	unzip -q /srv/downloads/mysql-jdbc-${MYSQL_DRIVER_VERSION}.zip -d /srv/downloads && \
 	cp -v /srv/downloads/mysql-connector-java-${MYSQL_DRIVER_VERSION}/mysql-connector-java-${MYSQL_DRIVER_VERSION}-bin.jar ${EXO_APP_DIR}/lib/
-RUN cd srv/downloads / && ls
+#RUN cd srv/downloads / && ls
+
+#Add marinaDB mysql JDBC/JNDI driver
 RUN curl -L -o /srv/downloads/mariadb-java-client-2.2.2.jar https://downloads.mariadb.com/Connectors/java/connector-java-2.2.2/mariadb-java-client-2.2.2.jar 
 #RUN cd srv/downloads / && ls
 #RUN unzip -q /srv/downloads/mariadb-java-client-2.2.2.jar.zip -d /srv/downloads && 
@@ -92,6 +104,7 @@ RUN cp -v /srv/downloads/mariadb-java-client-2.2.2.jar ${EXO_APP_DIR}/lib/
 #RUN cd ${EXO_APP_DIR} \  && ls	\ cd / \
 #    $$ cd ${EXO_DATA_DIR} \  && ls	
 
+#Create server presets
 COPY conf/server.xml ${EXO_APP_DIR}/conf/server.xml
 #COPY conf/setenv.sh ${EXO_APP_DIR}/bin/
 
@@ -99,7 +112,10 @@ COPY conf/server.xml ${EXO_APP_DIR}/conf/server.xml
 #        rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs && \
 #        chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}
 
+#SET standart environment
+RUN chmod 777 ${EXO_APP_DIR}/bin/setenv.sh
 RUN ${EXO_APP_DIR}/bin/setenv.sh
+
 # Install Docker customization file
 #ADD scripts/setenv-docker-customize.sh ${EXO_APP_DIR}/bin/setenv-docker-customize.sh
 #RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh \
@@ -133,4 +149,5 @@ VOLUME ["/srv/exo"]
 
 #RUN for a in ${ADDONS}; do echo "Installing addon $a"; /opt/exo/addon install $a; done
 
+#RUN chmod +x /opt/exo/start_eXo.sh
 ENTRYPOINT ["/opt/exo/start_eXo.sh", "--data", "/srv/exo"]

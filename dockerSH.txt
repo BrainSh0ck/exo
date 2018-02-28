@@ -1,7 +1,6 @@
-docker volume rm -f $(docker volume ls)
 docker rm -f $(docker ps -a -q)
 docker rmi -f $(docker images -q)
-
+docker volume rm -f $(docker volume ls)
 
 winpty docker exec -it [CONTAINER-ID] sh
 

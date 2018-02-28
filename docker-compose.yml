@@ -35,6 +35,7 @@ services:
     exo_bin:
         container_name: exo_bin
         #build: exo_bin
+        build: .
         image: exo_bin
         ports:
          - "8080:8080"
