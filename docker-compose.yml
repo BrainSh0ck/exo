@@ -45,8 +45,8 @@ services:
         #  - web
           - mysql
         #command: ["./wait-for-it.sh", "db:5432", "--", "python", "app.py"]
-        volumes:
-        - d:/libs/mount/data/:/srv/exo
+        #volumes:
+        #- d:/libs/mount/data/:/srv/exo
       
     
     #endpoint_mode: dnsrr
