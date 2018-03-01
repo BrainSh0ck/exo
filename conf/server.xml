@@ -62,7 +62,7 @@
               timeBetweenEvictionRunsMillis="30000" minEvictableIdleTimeMillis="60000"
               removeAbandoned="true" removeAbandonedTimeout="300" logAbandoned="false"
 		 defaultTransactionIsolation="READ_COMMITTED"              poolPreparedStatements="true"
-              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://10.23.9.44:3306/exo" />
+              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://localhost:3306/exo" />
 
     <!-- eXo JCR Datasource for portal -->
     <Resource name="exo-jcr_portal" auth="Container" type="javax.sql.DataSource"
@@ -72,7 +72,7 @@
               timeBetweenEvictionRunsMillis="30000" minEvictableIdleTimeMillis="60000"
               removeAbandoned="true" removeAbandonedTimeout="300" logAbandoned="false"
               poolPreparedStatements="true"      defaultTransactionIsolation="READ_COMMITTED"
-              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://10.23.9.44:3306/exo" />
+              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://localhost:3306/exo" />
 	<!-- eXo JPA Datasource for portal -->
     <Resource name="exo-jpa_portal" auth="Container" type="javax.sql.DataSource"
               initialSize="5" maxTotal="20" minIdle="5" maxIdle="15" maxWaitMillis="10000"
@@ -81,7 +81,7 @@
               timeBetweenEvictionRunsMillis="30000" minEvictableIdleTimeMillis="60000"
               removeAbandonedOnBorrow="true" removeAbandonedOnMaintenance="true" removeAbandonedTimeout="300" logAbandoned="false"
               poolPreparedStatements="true"
-              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://10.23.9.44:3306/exo" />
+              username="exo" password="exo" driverClassName="org.mariadb.jdbc.Driver" url="jdbc:mariadb://localhost:3306/exo" />
   </GlobalNamingResources>
 
   <!-- A "Service" is a collection of one or more "Connectors" that share

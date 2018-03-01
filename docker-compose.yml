@@ -19,7 +19,7 @@ services:
        - "3306:3306"
       image: mariadb
       environment:
-        #MYSQL_ROOT_HOST: 172.17.0.1
+        MYSQL_ROOT_HOST: localhost
         MYSQL_DATABASE: exo
         MYSQL_USER: exo
         MYSQL_PASSWORD: exo
@@ -41,12 +41,14 @@ services:
          - "8080:8080"
         #environment:
         #EXO_DB_TYPE: mysql
+        links:
+          - mysql
         depends_on:
         #  - web
           - mysql
         #command: ["./wait-for-it.sh", "db:5432", "--", "python", "app.py"]
-        volumes:
-        - d:/libs/mount/data/:/srv/exo
+        #volumes:
+        #- d:/libs/mount/data/:/srv/exo
       
     
     #endpoint_mode: dnsrr

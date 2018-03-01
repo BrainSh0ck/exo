@@ -11,3 +11,5 @@ docker run -p 80:80 -v d:/libs/mount:/usr/local/apache2/htdocs --name test httpd
 docker volume create --opt type=nfs --opt device=d/libs/mount/data data
 
 docker volume create --driver vieux/sshfs -o sshcmd=test@node2:/home/test -o password=test sshvolume
+
+MYSQL_DATABASE=exo MYSQL_USER=exo MYSQL_PASSWORD=exo MYSQL_ROOT_PASSWORD=exo
